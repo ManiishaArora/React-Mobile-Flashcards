@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import { StyleSheet, Text, View,TouchableOpacity } from 'react-native';
-import {getDefaultDecks} from '../utils/helpers'
+import {fetchDecksForHomeView} from '../utils/api'
 import { purple, white,lightPurp, gray } from '../utils/colors'
 import {connect} from 'react-redux'
 
@@ -8,10 +8,12 @@ class Decks extends Component {
     state = {
       decks:[]
     }
-    componentDidMount(){
-      decks = getDefaultDecks()
+    componentDidMount = async () => {
+      await this.loadView()
+    }
+    loadView = async () => {
+      decks = JSON.parse(await fetchDecksForHomeView())
       this.setState({decks})
-      
     }
     render(){
         const {decks}=this.state
@@ -19,13 +21,14 @@ class Decks extends Component {
             <View style={styles.container}>
               <View style={styles.deckContainer}>
                 {Object.keys(decks).map(deck => {
+                const totalCards = decks[deck].questions.length
                 return(
                   <View key={deck}>
                   <TouchableOpacity 
-                  onPress={() => this.props.navigation.navigate('DeckList', { name: deck })}
+                  onPress={() => this.props.navigation.navigate('Deck', { name: deck,totalCards,onBack:this.loadView})}
                   style={styles.deck}>
                       <Text style={[styles.deckContent,styles.deckTitle]}>{deck}</Text>
-                      <Text style={styles.deckContent}>3 cards</Text>
+                      <Text style={styles.deckContent}>{totalCards} cards</Text>
                   </TouchableOpacity>
                   </View>
                 )
@@ -33,7 +36,7 @@ class Decks extends Component {
                 })}
               </View>
               <View>
-                <TouchableOpacity onPress = {()=>{console.log('pressed')}} style={styles.addDeck}>
+                <TouchableOpacity onPress = {()=>this.props.navigation.navigate('AddDeck', { name: 'Add New Deck',onBack:this.loadView  })} style={styles.addDeck}>
                         <Text style={{color:white,textAlign:'center'}}>Add New Deck</Text>
                     </TouchableOpacity>
               </View>
