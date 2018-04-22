@@ -4,6 +4,7 @@ import Decks from './components/Decks'
 import Deck from './components/Deck'
 import AddDeck from './components/AddDeck'
 import AddCard from './components/AddCard'
+import Quiz from './components/Quiz'
 import { purple, white,gray } from './utils/colors'
 import { TabNavigator,StackNavigator } from 'react-navigation'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
@@ -71,6 +72,15 @@ const Stacks = StackNavigator({
   },
   AddCard:{
     screen:AddCard,
+    navigationOptions:{
+      headerStyle:{
+        backgroundColor:purple
+      },
+      headerTintColor:white
+    }
+  },
+  Quiz:{
+    screen:Quiz,
     navigationOptions:{
       headerStyle:{
         backgroundColor:purple

@@ -29,3 +29,8 @@ export const addNewCard = async (question,answer,deck) => {
     decks[deck].questions.push({'question':question,'answer':answer})
     await AsyncStorage.mergeItem(DECKS_STORAGE_KEY,JSON.stringify(decks))
 }
+
+export const getCards = async (deck) => {
+    let decks = JSON.parse(await AsyncStorage.getItem(DECKS_STORAGE_KEY))
+    return decks[deck].questions
+}

@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { StyleSheet, Text, View,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View,TouchableOpacity,FlatList } from 'react-native';
 import {fetchDecksForHomeView} from '../utils/api'
 import { purple, white,lightPurp, gray } from '../utils/colors'
 import {connect} from 'react-redux'
@@ -15,25 +15,32 @@ class Decks extends Component {
       decks = JSON.parse(await fetchDecksForHomeView())
       this.setState({decks})
     }
+    renderItem = ({item}) => {
+      const deck = item
+      const {decks}=this.state
+      const totalCards = decks[deck].questions.length
+      return(
+        <View key={deck}>
+          <TouchableOpacity 
+          onPress={() => this.props.navigation.navigate('Deck', { name: deck,totalCards,onBack:this.loadView})}
+          style={styles.deck}>
+              <Text style={[styles.deckContent,styles.deckTitle]}>{deck}</Text>
+              <Text style={styles.deckContent}>{totalCards} cards</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
     render(){
         const {decks}=this.state
         return(
             <View style={styles.container}>
               <View style={styles.deckContainer}>
-                {Object.keys(decks).map(deck => {
-                const totalCards = decks[deck].questions.length
-                return(
-                  <View key={deck}>
-                  <TouchableOpacity 
-                  onPress={() => this.props.navigation.navigate('Deck', { name: deck,totalCards,onBack:this.loadView})}
-                  style={styles.deck}>
-                      <Text style={[styles.deckContent,styles.deckTitle]}>{deck}</Text>
-                      <Text style={styles.deckContent}>{totalCards} cards</Text>
-                  </TouchableOpacity>
-                  </View>
-                )
-                  
-                })}
+                <FlatList 
+                data = {Object.keys(decks)}
+                renderItem = {this.renderItem}
+                keyExtractor={(item, index) => index}
+                />
+               
               </View>
               <View>
                 <TouchableOpacity onPress = {()=>this.props.navigation.navigate('AddDeck', { name: 'Add New Deck',onBack:this.loadView  })} style={styles.addDeck}>
