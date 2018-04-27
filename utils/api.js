@@ -1,7 +1,7 @@
 import {AsyncStorage} from 'react-native'
 import {getDefaultDecks} from './helpers'
 
-const DECKS_STORAGE_KEY='app@DECKS_STORAGE_KEY1'
+const DECKS_STORAGE_KEY='@app:DECKS_STORAGE_KEY'
 export const fetchDecksForHomeView = async () => {
     let decks = await AsyncStorage.getItem(DECKS_STORAGE_KEY)
     if(decks !=null){
