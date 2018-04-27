@@ -2,6 +2,7 @@ import React,{Component} from 'react';
 import { StyleSheet, Text, View,TouchableOpacity } from 'react-native';
 import { blue,red,white, gray } from '../utils/colors';
 import {getCards} from '../utils/api'
+import {clearLocalNotification,setLocalNotification} from '../utils/helpers'
 
 class Quiz extends Component {
     static navigationOptions = ({navigation}) =>{
@@ -13,6 +14,7 @@ class Quiz extends Component {
     state = {
         questions:[],
         attempted:0,
+        correctAttempt:0,
         showQuestion:true,
         completed:false
     }
@@ -25,24 +27,32 @@ class Quiz extends Component {
         this.setState({questions})
     }
     answer = (option) => {
-        let {questions,attempted,completed} = this.state
-        questions[attempted].option = option
-        attempted=questions.length>attempted+1?attempted+1:attempted
-        completed=questions.length===attempted+1?true:false
-        this.setState({questions,attempted,completed})
+        let {questions,attempted,completed,correctAttempt} = this.state
+        
+        if(completed){
+            return
+        }
+        correctAttempt=option=='Correct'?correctAttempt+1:correctAttempt
+        attempted=questions.length>=attempted+1?attempted+1:attempted
+        completed=questions.length===attempted?true:false
+        if(completed){
+            clearLocalNotification()
+            .then(setLocalNotification)
+        }
+        this.setState({questions,attempted,completed,correctAttempt})
     }
     restart = () => {
         this.setState({
             questions:[],
             attempted:0,
             showQuestion:true,
-            completed:false
+            completed:false,
+            correctAttempt:0
         })
         this.getQuestions()
     }
     render(){
-        const {questions,attempted,showQuestion,completed} = this.state
-        console.log('called')
+        const {questions,attempted,showQuestion,completed,correctAttempt} = this.state
         return(
             <View style={styles.container}>
                 {questions.length!==0 && completed===false &&
@@ -72,7 +82,7 @@ class Quiz extends Component {
                     completed===true && 
                     <View style={styles.titleContainer}>
                             <Text style={styles.titleText}>
-                                You've scored: {attempted+1} out of {questions.length}
+                                You've scored: {correctAttempt} out of {questions.length}
                             </Text>
                             <TouchableOpacity onPress = {()=>this.restart()} style={[styles.btn,{backgroundColor:blue, marginTop:30}]}>
                                 <Text style={{color:white,textAlign:'center'}}>Restart Quiz</Text>
