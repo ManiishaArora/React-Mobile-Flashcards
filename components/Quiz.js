@@ -27,19 +27,21 @@ class Quiz extends Component {
         this.setState({questions})
     }
     answer = (option) => {
-        let {questions,attempted,completed,correctAttempt} = this.state
+        let {questions,attempted,completed,correctAttempt,showQuestion} = this.state
         
         if(completed){
             return
         }
-        correctAttempt=option=='Correct'?correctAttempt+1:correctAttempt
-        attempted=questions.length>=attempted+1?attempted+1:attempted
-        completed=questions.length===attempted?true:false
+        correctAttempt=(option=='Correct')?correctAttempt+1:correctAttempt
+        attempted=(questions.length>=attempted+1)?attempted+1:attempted
+        completed=(questions.length===attempted)?true:false
+        showQuestion=true 
+        
         if(completed){
             clearLocalNotification()
             .then(setLocalNotification)
         }
-        this.setState({questions,attempted,completed,correctAttempt})
+        this.setState({questions,attempted,completed,correctAttempt,showQuestion})
     }
     restart = () => {
         this.setState({

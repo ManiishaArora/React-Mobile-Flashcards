@@ -2,7 +2,6 @@ import React,{Component} from 'react';
 import { StyleSheet, Text, View,TouchableOpacity,FlatList } from 'react-native';
 import {fetchDecksForHomeView} from '../utils/api'
 import { purple, white,lightPurp, gray } from '../utils/colors'
-import {connect} from 'react-redux'
 
 class Decks extends Component {
     state = {
@@ -43,7 +42,8 @@ class Decks extends Component {
                
               </View>
               <View>
-                <TouchableOpacity onPress = {()=>this.props.navigation.navigate('AddDeck', { name: 'Add New Deck',onBack:this.loadView  })} style={styles.addDeck}>
+                <TouchableOpacity onPress = {()=>this.props.navigation.navigate('AddDeck', 
+                  { name: 'Add New Deck',onBack:this.loadView  })} style={styles.addDeck}>
                         <Text style={{color:white,textAlign:'center'}}>Add New Deck</Text>
                     </TouchableOpacity>
               </View>
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-start',
     },
     deck:{
-       backgroundColor:purple,
+       backgroundColor:lightPurp,
        padding:13,
        borderRadius:3,
        margin:5,
@@ -91,9 +91,4 @@ const styles = StyleSheet.create({
     }
   });
 
-function mapStateToProps (decks) {
-  return {
-    decks
-  }
-}
-export default connect(mapStateToProps)(Decks)
+export default Decks

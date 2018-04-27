@@ -1,6 +1,5 @@
 import React,{Component} from 'react';
 import { StyleSheet, Text, View,TouchableOpacity } from 'react-native';
-import { connect } from 'react-redux'
 import { gray,white } from '../utils/colors';
 
 class Deck extends Component {
@@ -11,15 +10,16 @@ class Deck extends Component {
         }
     }
     state={
-        totalCards:this.props.totalCards
+        name:this.props.navigation.state.params.name,
+        totalCards:this.props.navigation.state.params.totalCards
     }
     refresh =  () => {
         this.setState({totalCards:this.state.totalCards+1})
-        this.props.reload() //Refresh the Parent View
+        this.props.navigation.state.params.onBack() //Refresh the Parent View
     }
+    
     render(){
-        const {name} = this.props
-        const {totalCards} = this.state
+        const {name,totalCards} = this.state
         return(
             <View style={styles.container}>
                 <Text style={styles.deckTitle}>{name}</Text>
@@ -34,7 +34,8 @@ class Deck extends Component {
                 <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Quiz', { name: 'Quiz',
                                                                                              deck:name
                                                                                             })} 
-                style={[styles.btn,{backgroundColor:gray}]}>
+                style={[styles.btn,{backgroundColor:gray}]}
+                disabled={totalCards===0}>
                         <Text style={{color:white,textAlign:'center',fontSize:16}}>Start Quiz</Text>
                 </TouchableOpacity>
           </View>
@@ -42,18 +43,7 @@ class Deck extends Component {
     }
 
 }
-const mapStateToProps = (state, { navigation }) => {
-    const {name,totalCards} = navigation.state.params
-    return {
-        name,
-        totalCards
-    }
-}
-const mapDispatchToProps = (dispatch, { navigation }) => {
-    return {
-      reload: () => navigation.state.params.onBack()
-    }
-  }
+
 const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -77,4 +67,4 @@ const styles = StyleSheet.create({
     }
   });
 
-export default  connect (mapStateToProps,mapDispatchToProps)(Deck)
+export default  Deck

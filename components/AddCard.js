@@ -1,7 +1,6 @@
 import React,{Component} from 'react';
-import { StyleSheet, Text, View ,KeyboardAvoidingView,TextInput,TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View ,KeyboardAvoidingView,TextInput,TouchableOpacity,Alert} from 'react-native';
 import { purple, white,lightPurp, gray } from '../utils/colors'
-import { connect } from 'react-redux'
 import {addNewCard} from '../utils/api'
 
 class AddCard extends Component {
@@ -13,11 +12,16 @@ class AddCard extends Component {
         }
     }
     submit = async () => {
-        const {  goBack,reload,deck } = this.props
+        
+        const deck = this.props.navigation.state.params.deck
         const { question,answer } = this.state
+        if(question.trim()===''||answer.trim()==''){
+            Alert.alert('Mandatory',"Please enter both Question and answer for creation of a card")
+            return
+        }
         await addNewCard(question,answer,deck)
-        goBack()
-        reload()
+        this.props.navigation.goBack()
+        this.props.navigation.state.params.onBack()
     }
     render(){
         return(
@@ -77,19 +81,5 @@ const styles = StyleSheet.create({
         width:120
      }
   });
-  const mapDispatchToProps = (dispatch, { navigation }) => {
-    return {
-      goBack: () => navigation.goBack(),
-      reload: () => navigation.state.params.onBack()
-    }
-  }
 
-  const mapStateToProps = (state, { navigation }) => {
-    const {name,deck} = navigation.state.params
-    return {
-        name,
-        deck
-    }
-}
-
-export default  connect (mapStateToProps,mapDispatchToProps)(AddCard)
+export default  AddCard

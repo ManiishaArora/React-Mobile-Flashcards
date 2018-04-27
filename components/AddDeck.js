@@ -1,7 +1,6 @@
 import React,{Component} from 'react';
-import { StyleSheet, Text, View ,KeyboardAvoidingView,TextInput,TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View ,KeyboardAvoidingView,TextInput,TouchableOpacity,Alert} from 'react-native';
 import { purple, white,lightPurp, gray } from '../utils/colors'
-import { connect } from 'react-redux'
 import {addNewDeck} from '../utils/api'
 
 class AddDeck extends Component {
@@ -13,10 +12,18 @@ class AddDeck extends Component {
         }
     }
     submit = async () => {
-        await addNewDeck(this.state.text)
-        const {  goBack,reload } = this.props
-        goBack()
-        reload()
+        const {text} = this.state
+        if(text.trim()===''){
+            Alert.alert('Mandatory',"Please enter a name for creation of a deck")
+            return
+        }
+        created = await addNewDeck(text)
+        if(created===false){
+            Alert.alert('Error!',"Already a deck exists with this title")
+            return
+        }
+        this.props.navigation.state.params.onBack() //Refresh Parent State
+        this.props.navigation.navigate('Deck', { name: text,totalCards:0,onBack:this.props.navigation.state.params.onBack})
     }
     render(){
         return(
@@ -72,11 +79,5 @@ const styles = StyleSheet.create({
         width:120
      }
   });
-  const mapDispatchToProps = (dispatch, { navigation }) => {
-    return {
-      goBack: () => navigation.goBack(),
-      reload: () => navigation.state.params.onBack()
-    }
-  }
 
-export default  connect (mapDispatchToProps)(AddDeck)
+export default  AddDeck

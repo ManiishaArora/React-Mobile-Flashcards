@@ -14,6 +14,13 @@ export const fetchDecksForHomeView = async () => {
    
 }
 export const addNewDeck = async (title) => {
+    let decks = await AsyncStorage.getItem(DECKS_STORAGE_KEY)
+    if(decks !=null){
+        decks=JSON.parse(decks)
+        if(title in decks){ //Do not add/replace if Card already exists
+            return false
+        }
+    }
     let newDeck = { }
     let content = { }
     
@@ -22,6 +29,7 @@ export const addNewDeck = async (title) => {
 
     newDeck[title]=content  
     await AsyncStorage.mergeItem(DECKS_STORAGE_KEY,JSON.stringify(newDeck))
+    return true
 }
 
 export const addNewCard = async (question,answer,deck) => {

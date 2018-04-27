@@ -8,9 +8,6 @@ import Quiz from './components/Quiz'
 import { purple, white,gray } from './utils/colors'
 import { TabNavigator,StackNavigator } from 'react-navigation'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
-import {createStore} from 'redux'
-import  {Provider} from 'react-redux'
-import reducer from './reducers/index'
 import {setLocalNotification} from './utils/helpers'
 
 const AppStatusBar = ({backgroundColor, ...props}) => 
@@ -26,7 +23,6 @@ const Tabs = TabNavigator({
       screen:Decks,
       navigationOptions:{
         tabBarLabel: 'Decks',
-        tabBarIcon: ({ tintColor }) => <Ionicons name='ios-bookmarks' size={30} color={tintColor} />,
       },
     }
   },
@@ -96,12 +92,10 @@ export default class App extends React.Component {
   }
   render() {
     return (
-      <Provider store={createStore(reducer)}>
       <View style={styles.container}>
           <AppStatusBar backgroundColor={purple} barStyle="light-content" />
           <Stacks />
       </View>
-      </Provider>
      
     );
   }
